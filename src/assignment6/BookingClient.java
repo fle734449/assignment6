@@ -33,13 +33,11 @@ public class BookingClient {
     		private String id;
     		private int numClients;
     		private int client;
-    		private Theater theater;
     		
-    		public BookClientThread(String id, int numClients, int client, Theater theater) {
+    		public BookClientThread(String id, int numClients, int client) {
     			this.id = id;
     			this.numClients = numClients + client;
     			this.client = client;
-    			this.theater = theater;
     		}
     	
     		@Override
@@ -67,7 +65,7 @@ public class BookingClient {
         ArrayList<Thread> t = new ArrayList<Thread>();
         int client = 1;
         for(Map.Entry<String, Integer> e : office.entrySet()) {
-        	BookClientThread b = new BookClientThread(e.getKey(), e.getValue(), client, theater);
+        	BookClientThread b = new BookClientThread(e.getKey(), e.getValue(), client);
         	client += e.getValue();
         	Thread thread = new Thread(b);
         	t.add(thread);
