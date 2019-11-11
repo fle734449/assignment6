@@ -33,11 +33,13 @@ public class BookingClient {
     		private String id;
     		private int numClients;
     		private int client;
-    	
-    		public BookClientThread(String id, int numClients, int client) {
+    		private Theater theater;
+    		
+    		public BookClientThread(String id, int numClients, int client, Theater theater) {
     			this.id = id;
     			this.numClients = numClients + client;
     			this.client = client;
+    			this.theater = theater;
     		}
     	
     		@Override
@@ -49,17 +51,10 @@ public class BookingClient {
     				synchronized(theater.getTransactionLog()) {
     					seat = theater.bestAvailableSeat();
     					ticket = theater.printTicket(id, seat, client);		
-    				}
-    				if(ticket == null) {
-    					break;
-    				}
-    				
+    				}		
     				client++;
-    				
     			}
-			
     		}
-    	
     	}
     /**
      * Starts the box office simulation by creating (and starting) threads
@@ -72,7 +67,7 @@ public class BookingClient {
         ArrayList<Thread> t = new ArrayList<Thread>();
         int client = 1;
         for(Map.Entry<String, Integer> e : office.entrySet()) {
-        	BookClientThread b = new BookClientThread(e.getKey(), e.getValue(), client);
+        	BookClientThread b = new BookClientThread(e.getKey(), e.getValue(), client, theater);
         	client += e.getValue();
         	Thread thread = new Thread(b);
         	t.add(thread);
@@ -92,7 +87,7 @@ public class BookingClient {
         boxOffice.put("BX5", 3);
         boxOffice.put("BX4", 3);
         
-        Theater cinemark = new Theater(300, 5, "Ouija");
+        Theater cinemark = new Theater(3, 5, "Ouija");
         BookingClient fandango = new BookingClient(boxOffice, cinemark);
         fandango.simulate();
         

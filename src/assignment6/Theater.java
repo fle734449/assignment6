@@ -161,7 +161,7 @@ public class Theater {
      * @return the best seat or null if theater is full
      */
     public Seat bestAvailableSeat() {
-    	//synchronized(this) {
+    	synchronized(this) {
     		Seat seat = new Seat(bestSeat / seatsPerRow, (bestSeat % seatsPerRow) + 1);
         	if(bestSeat == numRows*seatsPerRow) {
     			return null;
@@ -169,7 +169,7 @@ public class Theater {
     			bestSeat++;
     			return seat;
     		}
-    	//}
+    	}
     }
 
     /**
@@ -180,7 +180,8 @@ public class Theater {
      * @return a ticket or null if a box office failed to reserve the seat
      */
     public Ticket printTicket(String boxOfficeId, Seat seat, int client) {
-        
+    	Ticket ticket = null;
+    	//synchronized(this) {
     	if (seat == null) {
         	if(!soldOut) {
         		System.out.println("Sorry, we are sold out!");
@@ -189,11 +190,13 @@ public class Theater {
         	return null;
         }
         
-        Ticket ticket = new Ticket(show, boxOfficeId, seat, client);
+        ticket = new Ticket(show, boxOfficeId, seat, client);
         
+        //synchronized(ticket) {
         transactionLog.add(ticket);
         
         System.out.println(ticket);
+        //}
         try {
 			Thread.sleep(printDelay);
 		} catch (InterruptedException e) {
