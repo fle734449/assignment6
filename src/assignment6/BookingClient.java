@@ -32,25 +32,25 @@ public class BookingClient {
     	public class BookClientThread implements Runnable {
     		private String id;
     		private int numClients;
-    		private int placeInLine;
+    		private int client;
     	
-    		public BookClientThread(String id, int numClients, int placeInLine) {
+    		public BookClientThread(String id, int numClients, int client) {
     			this.id = id;
-    			this.numClients = numClients + placeInLine;
-    			this.placeInLine = placeInLine;
+    			this.numClients = numClients + client;
+    			this.client = client;
     		}
     	
     		@Override
     		public void run() {
     			Theater.Ticket ticket = null;   			
-    			while (placeInLine < numClients) {	
-    				Theater.Seat seat = theater.bestAvailableSeat();	
-    				ticket = theater.printTicket(id, seat, placeInLine);			
+    			while (client < numClients) {	
+    				Theater.Seat seat = theater.bestAvailableSeat();
+    				ticket = theater.printTicket(id, seat, client);			
     				if(ticket == null) {
     					break;
     				}
     				
-    				placeInLine++;
+    				client++;
     				
     			}
 			
@@ -66,10 +66,10 @@ public class BookingClient {
      */
     public List<Thread> simulate() {
         ArrayList<Thread> t = new ArrayList<Thread>();
-        int placeInLine = 1;
+        int client = 1;
         for(Map.Entry<String, Integer> e : office.entrySet()) {
-        	BookClientThread b = new BookClientThread(e.getKey(), e.getValue(), placeInLine);
-        	placeInLine += e.getValue();
+        	BookClientThread b = new BookClientThread(e.getKey(), e.getValue(), client);
+        	client += e.getValue();
         	Thread thread = new Thread(b);
         	t.add(thread);
         }
@@ -91,9 +91,11 @@ public class BookingClient {
         Theater cinemark = new Theater(3, 5, "Ouija");
         BookingClient fandango = new BookingClient(boxOffice, cinemark);
         fandango.simulate();
+        /*
         List<Theater.Ticket> g = cinemark.getTransactionLog();
         for(int i = 0; i < g.size(); i++ ) {
         	System.out.println(g.get(i).getSeat());
         }
+        */
     }
 }
