@@ -42,10 +42,14 @@ public class BookingClient {
     	
     		@Override
     		public void run() {
-    			Theater.Ticket ticket = null;   			
+    			Theater.Ticket ticket = null; 
+    			Theater.Seat seat = null;
     			while (client < numClients) {	
-    				Theater.Seat seat = theater.bestAvailableSeat();
-    				ticket = theater.printTicket(id, seat, client);			
+    				
+    				synchronized(theater.getTransactionLog()) {
+    					seat = theater.bestAvailableSeat();
+    					ticket = theater.printTicket(id, seat, client);		
+    				}
     				if(ticket == null) {
     					break;
     				}
@@ -88,14 +92,14 @@ public class BookingClient {
         boxOffice.put("BX5", 3);
         boxOffice.put("BX4", 3);
         
-        Theater cinemark = new Theater(3, 5, "Ouija");
+        Theater cinemark = new Theater(300, 5, "Ouija");
         BookingClient fandango = new BookingClient(boxOffice, cinemark);
         fandango.simulate();
-        /*
+        
         List<Theater.Ticket> g = cinemark.getTransactionLog();
         for(int i = 0; i < g.size(); i++ ) {
         	System.out.println(g.get(i).getSeat());
         }
-        */
+        
     }
 }

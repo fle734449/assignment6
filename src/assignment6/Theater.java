@@ -161,7 +161,7 @@ public class Theater {
      * @return the best seat or null if theater is full
      */
     public Seat bestAvailableSeat() {
-    	synchronized(this) {
+    	//synchronized(this) {
     		Seat seat = new Seat(bestSeat / seatsPerRow, (bestSeat % seatsPerRow) + 1);
         	if(bestSeat == numRows*seatsPerRow) {
     			return null;
@@ -169,7 +169,7 @@ public class Theater {
     			bestSeat++;
     			return seat;
     		}
-    	}
+    	//}
     }
 
     /**
@@ -190,7 +190,9 @@ public class Theater {
         }
         
         Ticket ticket = new Ticket(show, boxOfficeId, seat, client);
+        
         transactionLog.add(ticket);
+        
         System.out.println(ticket);
         try {
 			Thread.sleep(printDelay);

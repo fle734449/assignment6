@@ -32,6 +32,7 @@ public class A6SampleTest {
      *
      * @throws InterruptedException
      */
+    /*
     @BeforeClass
     public static void setupBeforeClass() throws InterruptedException {
         Map<String, Integer> offices = new HashMap<String, Integer>() {{
@@ -45,7 +46,7 @@ public class A6SampleTest {
 
         concurrencyTestLog = t.getTransactionLog();
     }
-
+	*/
     /**
      * Tests that bestAvailableSeat() can calculate seats with two letters (ex: AA)
      * <p>
