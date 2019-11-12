@@ -28,32 +28,50 @@ public class BookingClient {
         this.theater = theater;
         this.office = office;
     }
-
+    	/**
+    	 * 
+    	 * Inner class of BookingClient used to run threads/BoxOffice IDs
+    	 *
+    	 */
     	public class BookClientThread implements Runnable {
     		private String id;
     		private int numClients;
     		private int client;
     		
+    		/**
+    		 * 
+    		 * @param id is the BoxOffice ID
+    		 * @param numClients is the number of clients in line
+    		 * @param client is the current client being processed in line
+    		 */
     		public BookClientThread(String id, int numClients, int client) {
     			this.id = id;
     			this.numClients = numClients + client;
     			this.client = client;
     		}
     	
+    		/**
+    		 * Runs the threads
+    		 */
     		@Override
     		public void run() {
     			Theater.Ticket ticket = null; 
     			Theater.Seat seat = null;
     			while (client < numClients) {	
-    				
     				synchronized(theater.getTransactionLog()) {
     					seat = theater.bestAvailableSeat();
     					ticket = theater.printTicket(id, seat, client);		
-    				}		
+    				}	
+    				try {
+    					Thread.sleep(theater.getPrintDelay());
+    				} catch (InterruptedException e) {
+    					e.printStackTrace();
+    				}
     				client++;
     			}
     		}
     	}
+    	
     /**
      * Starts the box office simulation by creating (and starting) threads
      * for each box office to sell tickets for the given theater
@@ -77,6 +95,10 @@ public class BookingClient {
         return t;
     }
 
+    /**
+     * Initialize Booking CLient with parameters
+     * 
+     */
     public static void main(String[] args) {
         Map<String, Integer> boxOffice = new HashMap<String, Integer>();
         boxOffice.put("BX1", 3);
@@ -88,11 +110,5 @@ public class BookingClient {
         Theater cinemark = new Theater(3, 5, "Ouija");
         BookingClient fandango = new BookingClient(boxOffice, cinemark);
         fandango.simulate();
-        
-        List<Theater.Ticket> g = cinemark.getTransactionLog();
-        for(int i = 0; i < g.size(); i++ ) {
-        	System.out.println(g.get(i).getSeat());
-        }
-        
     }
 }
